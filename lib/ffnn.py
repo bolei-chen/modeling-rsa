@@ -15,7 +15,8 @@ class FFNN(nn.Module):
             'validation loss' : [],
         } 
         self.device = device 
-        self.input = nn.Linear(5, 36) 
+        self.input = nn.Linear(8, 36) 
+        torch.nn.init.xavier_uniform(self.input.weight)
         self.l1 = nn.Linear(36, 36) 
         self.l2 = nn.Linear(36, 36) 
         self.l3 = nn.Linear(36, 36) 
@@ -49,7 +50,7 @@ class FFNN(nn.Module):
                 optimizer.zero_grad()   
                 y_pred = self(xs)
                 criterion = torch.nn.MSELoss() 
-                loss = criterion(y_pred, ys) 
+                loss = criterion(y_pred, ys)
                 loss.backward()
                 optimizer.step()    
                 self.log['training loss'].append(loss.item()) 
@@ -63,7 +64,7 @@ class FFNN(nn.Module):
                      
                     y_hats = self(xs)
                     criterion = torch.nn.MSELoss() 
-                    loss = criterion(y_hats, ys) 
+                    loss = criterion(y_hats, ys)
                     self.log['validation loss'].append(loss.item()) 
             self.train() 
 

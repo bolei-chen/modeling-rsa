@@ -1,17 +1,20 @@
 import numpy as np
 from matplotlib import pyplot as plt 
-import torch
 from utils import * 
 from qvalue_machine import * 
  
 def plot_barcentric(corpus, x, marker='s', c='pink', edgecolors='green', s=5):
-    selected_is = select(corpus, 'x', x) 
-     
+      
     corners = np.array([[1, 0], [0, 0], [0.5, np.sqrt(3) / 2]])
     triangle = plt.Polygon(corners, fill=False, color='green')
     plt.gca().add_patch(triangle) 
-
-    cvalues = np.array([get_cs(corpus, i) for i in range(len(corpus)) if i in selected_is])
+     
+    if x != -1: 
+        selected_is = select(corpus, 'x', x) 
+        cvalues = np.array([get_cs(corpus, i) for i in range(len(corpus)) if i in selected_is])
+    else:
+        cvalues = np.array([get_cs(corpus, i) for i in range(len(corpus))])
+         
     coords = cs2coords(cvalues) 
      
     xs, ys = zip(*coords)
@@ -20,7 +23,7 @@ def plot_barcentric(corpus, x, marker='s', c='pink', edgecolors='green', s=5):
     plt.show() 
     return 0  
 
-def evaluate_ffnn(corpus, x, model, ms, cs, edgecolors, s=5):
+def evaluate_ffnn_tflow(corpus, x, model, ms, cs, edgecolors, s=5): 
     corners = np.array([[1, 0], [0, 0], [0.5, np.sqrt(3) / 2]])
     triangle = plt.Polygon(corners, fill=False, color='green')
     plt.gca().add_patch(triangle) 
@@ -33,7 +36,7 @@ def evaluate_ffnn(corpus, x, model, ms, cs, edgecolors, s=5):
     coords_real = cs2coords(cvalues_real) 
     xs_real, ys_real = zip(*coords_real) 
      
-    cvalues_pred = [model.forward(qvalue).detach().numpy() for _, qvalue in qvalues.items()] 
+    cvalues_pred = [model.predict(qvalue) for _, qvalue in qvalues.items()] 
     coords_pred = cs2coords(cvalues_pred) 
     xs_pred, ys_pred = zip(*coords_pred) 
 
@@ -47,6 +50,7 @@ def evaluate_ffnn(corpus, x, model, ms, cs, edgecolors, s=5):
     plt.title('barycentric evaludation map') 
     plt.show() 
     return 0 
+
 
 def evaluate_rf(corpus, x, model, ms, cs, edgecolors, s=5):
     corners = np.array([[1, 0], [0, 0], [0.5, np.sqrt(3) / 2]])

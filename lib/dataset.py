@@ -1,7 +1,7 @@
 import torch 
 from torch.utils.data import Dataset
 
-class QValDataset(Dataset):
+class FeatureSet(Dataset):
 
     def __init__(self, X, y, length, transform=None):
         self.X = X
